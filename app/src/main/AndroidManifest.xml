@@ -12,7 +12,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".recipes.MainActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".detail.DetailActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".recipes.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.timeakapitany.bakingapp.recipes.MainActivity" />
+        </activity>
+        <activity
+            android:name=".detail.IngredientDetailActivity"
+            android:label="@string/ingredients"
+            android:launchMode="singleTop"
+            android:parentActivityName=".detail.DetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.timeakapitany.bakingapp.detail.DetailActivity" />
+        </activity>
     </application>
 
 </manifest>
