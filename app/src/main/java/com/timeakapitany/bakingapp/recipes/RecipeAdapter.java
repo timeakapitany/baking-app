@@ -1,7 +1,6 @@
 package com.timeakapitany.bakingapp.recipes;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.timeakapitany.bakingapp.R;
-import com.timeakapitany.bakingapp.detail.DetailActivity;
 import com.timeakapitany.bakingapp.model.Recipe;
 
 import java.util.ArrayList;
@@ -18,6 +16,7 @@ import java.util.List;
 class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
     private List<Recipe> items = new ArrayList<>();
+    private RecipeClickListener recipeClickListener;
 
     @NonNull
     @Override
@@ -36,8 +35,10 @@ class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = DetailActivity.newIntent(v.getContext(), currentItem);
-                context.startActivity(intent);
+                if (recipeClickListener != null) {
+                    recipeClickListener.onRecipeClick(v, currentItem);
+                }
+
             }
         });
     }
@@ -52,5 +53,13 @@ class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void setRecipeClickListener(RecipeClickListener recipeClickListener) {
+        this.recipeClickListener = recipeClickListener;
+    }
 
+
+    public interface RecipeClickListener {
+
+        void onRecipeClick(View v, Recipe recipe);
+    }
 }

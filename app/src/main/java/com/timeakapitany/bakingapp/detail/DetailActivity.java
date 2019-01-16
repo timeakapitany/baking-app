@@ -23,6 +23,7 @@ public class DetailActivity extends AppCompatActivity
     private Recipe recipe;
     private boolean twoPane;
 
+
     public static Intent newIntent(Context context, Recipe recipe) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(DetailActivity.CURRENT_RECIPE, recipe);
