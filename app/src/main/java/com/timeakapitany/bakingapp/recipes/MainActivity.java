@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         setContentView(R.layout.activity_main);
 
         if (AppWidgetManager.ACTION_APPWIDGET_CONFIGURE.equals(getIntent().getAction())) {
-            Toast.makeText(this, "Opened from widget", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select a recipe for ingredients' widget", Toast.LENGTH_SHORT).show();
             fromWidget = true;
         }
 

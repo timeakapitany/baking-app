@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,7 @@ public class InstructionStepFragment extends Fragment {
         super.onAttach(context);
         Bundle bundle = getArguments();
         step = bundle.getParcelable(CURRENT_STEP);
-        if (!step.getVideoUrl().isEmpty() && !getResources().getBoolean(R.bool.action_bar_visibility))
+        if (!TextUtils.isEmpty(step.getVideoUrl()) && !getResources().getBoolean(R.bool.action_bar_visibility))
             ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         try {
             listener = ((StepNavigationListener) context);
@@ -166,7 +167,7 @@ public class InstructionStepFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!step.getVideoUrl().isEmpty()) {
+        if (!TextUtils.isEmpty(step.getVideoUrl())) {
             initializePlayer(Uri.parse(step.getVideoUrl()));
         } else {
             playerView.setVisibility(View.GONE);

@@ -16,7 +16,7 @@ import com.timeakapitany.bakingapp.model.Step;
 public class DetailActivity extends AppCompatActivity
         implements InstructionStepsAdapter.StepClickListener, InstructionStepFragment.StepNavigationListener {
 
-    private static final String CURRENT_RECIPE = "current.recipe";
+    public static final String CURRENT_RECIPE = "current.recipe";
     private static final String CURRENT_POSITION = "current.position";
 
     private int currentPosition;
@@ -26,7 +26,7 @@ public class DetailActivity extends AppCompatActivity
 
     public static Intent newIntent(Context context, Recipe recipe) {
         Intent intent = new Intent(context, DetailActivity.class);
-        intent.putExtra(DetailActivity.CURRENT_RECIPE, recipe);
+        intent.putExtra(CURRENT_RECIPE, recipe);
         return intent;
     }
 
@@ -35,25 +35,37 @@ public class DetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+
         twoPane = findViewById(R.id.two_pane) != null;
 
         if (savedInstanceState != null) {
             recipe = savedInstanceState.getParcelable(CURRENT_RECIPE);
             currentPosition = savedInstanceState.getInt(CURRENT_POSITION);
         } else {
-            recipe = getIntent().getParcelableExtra(CURRENT_RECIPE);
-            if (twoPane) {
-                onStepClick(null, 0);
-            }
+            onNewIntent(getIntent());
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setActionBarTitle();
+    }
+
+    private void setActionBarTitle() {
         this.getSupportActionBar().setTitle(recipe.getName());
+    }
 
+    private void showDetailFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(RecipeDetailsFragment.TAG) == null) {
+        if (fragmentManager.findFragmentByTag(RecipeDetailsFragment.TAG + recipe.getId()) == null) {
+
+            for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
+                fragmentManager.popBackStackImmediate();
+            }
 
             fragmentManager.beginTransaction()
-                    .add(R.id.recipe_container, RecipeDetailsFragment.newInstance(recipe, twoPane), RecipeDetailsFragment.TAG)
+                    .replace(R.id.recipe_container, RecipeDetailsFragment.newInstance(recipe, twoPane), RecipeDetailsFragment.TAG + recipe.getId())
                     .commit();
         }
     }
@@ -68,19 +80,21 @@ public class DetailActivity extends AppCompatActivity
     @Override
     public void onStepClick(View v, int position) {
         currentPosition = position;
-        Step currentStep = recipe.getStepsList().get(position);
+        if (position < recipe.getStepsList().size()) {
+            Step currentStep = recipe.getStepsList().get(position);
 
-        InstructionStepFragment instructionStepFragment = InstructionStepFragment.newInstance(currentStep);
+            InstructionStepFragment instructionStepFragment = InstructionStepFragment.newInstance(currentStep);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment previousFragment = fragmentManager.findFragmentById(R.id.recipe_step_container);
-        if (previousFragment != null) {
-            fragmentManager.popBackStack();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Fragment previousFragment = fragmentManager.findFragmentById(R.id.recipe_step_container);
+            if (previousFragment != null) {
+                fragmentManager.popBackStack();
+            }
+            fragmentTransaction.replace(R.id.recipe_step_container, instructionStepFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
-        fragmentTransaction.replace(R.id.recipe_step_container, instructionStepFragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     @Override
@@ -111,4 +125,17 @@ public class DetailActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        recipe = intent.getParcelableExtra(CURRENT_RECIPE);
+
+        showDetailFragment();
+        if (twoPane) {
+            onStepClick(null, currentPosition);
+        }
+    }
+
+
 }

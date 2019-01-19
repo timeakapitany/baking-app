@@ -1,6 +1,5 @@
 package com.timeakapitany.bakingapp.recipes;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,7 +27,6 @@ class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final RecipeViewHolder holder, final int position) {
         final Recipe currentItem = items.get(position);
-        final Context context = holder.textView.getContext();
         holder.textView.setText(currentItem.getName());
 
 

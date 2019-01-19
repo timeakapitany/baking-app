@@ -2,6 +2,7 @@ package com.timeakapitany.bakingapp.detail;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.timeakapitany.bakingapp.R;
@@ -23,6 +24,8 @@ public class IngredientDetailActivity extends AppCompatActivity {
         setContentView(R.layout.ingredient_detail);
         ButterKnife.bind(this);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         recipe = getIntent().getParcelableExtra(IngredientDetailActivity.CURRENT_RECIPE);
         this.getSupportActionBar().setSubtitle(recipe.getName());
         ingredientDetail.setText(createIngredientListing(recipe));
@@ -40,5 +43,12 @@ public class IngredientDetailActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
