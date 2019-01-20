@@ -15,13 +15,12 @@ import com.timeakapitany.bakingapp.model.Recipe;
  */
 public class BakingWidgetProvider extends AppWidgetProvider {
 
-
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, Recipe recipe, int appWidgetId) {
-        Intent intent = DetailActivity.newIntent(context, recipe);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_widget_provider);
-        views.setOnClickPendingIntent(R.id.widget, pendingIntent);
         if (recipe != null) {
+            Intent intent = DetailActivity.newIntent(context, recipe);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < recipe.getIngredientsList().size(); i++) {
                 stringBuilder.append(String.format("- %s: %s %s\n", recipe.getIngredientsList().get(i).getIngredientName(),
@@ -31,27 +30,16 @@ public class BakingWidgetProvider extends AppWidgetProvider {
 
             views.setTextViewText(R.id.appwidget_recipe, recipe.getName());
             views.setTextViewText(R.id.appwidget_ingredient, stringBuilder.toString());
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
-        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, null, appWidgetId);
-
         }
     }
 
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
 }
 
