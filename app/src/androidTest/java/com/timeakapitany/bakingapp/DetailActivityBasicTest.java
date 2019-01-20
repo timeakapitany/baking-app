@@ -30,7 +30,6 @@ public class DetailActivityBasicTest {
     @Rule
     public ActivityTestRule<DetailActivity> activityTestRule = new ActivityTestRule<>(DetailActivity.class, false, false);
 
-
     @Test
     public void testRecipeDetailActionBar_HasRecipeName() {
         Recipe testRecipe = new Recipe(0, "Test Cake", new ArrayList<Step>());
@@ -40,7 +39,6 @@ public class DetailActivityBasicTest {
         activityTestRule.launchActivity(intent);
 
         onView(allOf(instanceOf(TextView.class), withParent(withId(R.id.action_bar)))).check(matches(withText(testRecipe.getName())));
-
     }
 
 }
