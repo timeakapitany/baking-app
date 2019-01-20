@@ -11,9 +11,9 @@
         android:id="@+id/appwidget_recipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="@dimen/view_margin"
+        android:layout_marginTop="@dimen/view_margin"
+        android:layout_marginEnd="@dimen/view_margin"
         android:textStyle="bold|italic"
         tools:text="@tools:sample/lorem" />
 
@@ -22,10 +22,10 @@
         android:id="@+id/appwidget_ingredient"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/view_margin"
+        android:layout_marginTop="@dimen/view_margin"
+        android:layout_marginEnd="@dimen/view_margin"
+        android:layout_marginBottom="@dimen/view_margin"
         android:textSize="12sp"
         android:textStyle="italic"
         tools:text="@tools:sample/lorem/random" />

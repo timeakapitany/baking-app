@@ -28,15 +28,12 @@ class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     public void onBindViewHolder(@NonNull final RecipeViewHolder holder, final int position) {
         final Recipe currentItem = items.get(position);
         holder.textView.setText(currentItem.getName());
-
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (recipeClickListener != null) {
                     recipeClickListener.onRecipeClick(v, currentItem);
                 }
-
             }
         });
     }
@@ -46,15 +43,14 @@ class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
         return items.size();
     }
 
-    public void setItems(List<Recipe> recipes) {
+    void setItems(List<Recipe> recipes) {
         this.items = recipes;
         notifyDataSetChanged();
     }
 
-    public void setRecipeClickListener(RecipeClickListener recipeClickListener) {
+    void setRecipeClickListener(RecipeClickListener recipeClickListener) {
         this.recipeClickListener = recipeClickListener;
     }
-
 
     public interface RecipeClickListener {
 

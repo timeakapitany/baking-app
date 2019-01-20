@@ -25,8 +25,8 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="@dimen/view_margin"
+        android:layout_marginEnd="@dimen/view_margin"
         app:layout_constraintBottom_toTopOf="@id/back_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/playerView"

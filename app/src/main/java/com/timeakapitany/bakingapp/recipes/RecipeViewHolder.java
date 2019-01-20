@@ -9,12 +9,12 @@ import com.timeakapitany.bakingapp.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeViewHolder extends RecyclerView.ViewHolder {
+class RecipeViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.recipe_title)
     TextView textView;
 
-    public RecipeViewHolder(View itemView) {
+    RecipeViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

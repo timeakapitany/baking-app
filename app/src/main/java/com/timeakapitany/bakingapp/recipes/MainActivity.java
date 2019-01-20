@@ -23,11 +23,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements RecipeAdapter.RecipeClickListener {
 
     private RecipeAdapter recipeAdapter;
-    private RecipeViewModel model;
     private boolean fromWidget;
     private RecipeAdapter.RecipeClickListener listener;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +39,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         listener = this;
         setupRecyclerView();
 
-
-        model = ViewModelProviders.of(this).get(RecipeViewModel.class);
+        RecipeViewModel model = ViewModelProviders.of(this).get(RecipeViewModel.class);
         model.recipesLiveData.observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
@@ -51,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             }
         });
     }
-
-
 
     private void setupRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -66,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
     public void onRecipeClick(View v, Recipe recipe) {
         if (fromWidget) {
             configureAppWidget(this, recipe);
-
         } else {
             Intent intent = DetailActivity.newIntent(v.getContext(), recipe);
             startActivity(intent);
@@ -90,7 +83,5 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             setResult(RESULT_OK, intent);
             finish();
         }
-
-
     }
 }

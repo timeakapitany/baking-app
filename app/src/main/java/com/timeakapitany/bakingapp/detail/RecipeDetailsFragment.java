@@ -47,18 +47,17 @@ public class RecipeDetailsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int position;
-        boolean needsHighlight;
+        int position = 0;
+        boolean needsHighlight = true;
         if (savedInstanceState != null) {
             position = savedInstanceState.getInt(CURRENT_POSITION);
             needsHighlight = savedInstanceState.getBoolean(NEEDS_HIGHLIGHT);
-        } else {
-            position = 0;
+            recipeItem = savedInstanceState.getParcelable(CURRENT_RECIPE);
+        } else if (getArguments() != null) {
             needsHighlight = getArguments().getBoolean(NEEDS_HIGHLIGHT);
+            recipeItem = getArguments().getParcelable(CURRENT_RECIPE);
         }
         instructionAdapter = new InstructionStepsAdapter(needsHighlight, position);
-        recipeItem = getArguments().getParcelable(CURRENT_RECIPE);
-
     }
 
     @Override
@@ -73,10 +72,9 @@ public class RecipeDetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
         ButterKnife.bind(this, rootView);
-
 
         instructionAdapter.setItems(recipeItem.getStepsList());
         instructionAdapter.setClickListener(listener);
@@ -103,6 +101,7 @@ public class RecipeDetailsFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(CURRENT_POSITION, instructionAdapter.getCurrentPosition());
         outState.putBoolean(NEEDS_HIGHLIGHT, instructionAdapter.isNeedsHighlight());
+        outState.putParcelable(CURRENT_RECIPE, recipeItem);
         super.onSaveInstanceState(outState);
     }
 }

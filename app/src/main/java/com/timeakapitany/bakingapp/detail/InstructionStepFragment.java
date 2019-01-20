@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -26,6 +28,8 @@ import com.google.android.exoplayer2.util.Util;
 import com.timeakapitany.bakingapp.R;
 import com.timeakapitany.bakingapp.model.Step;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -37,7 +41,6 @@ public class InstructionStepFragment extends Fragment {
     private static final String AUTO_PLAY = "auto.play";
     @BindView(R.id.playerView)
     PlayerView playerView;
-    @Nullable
     @BindView(R.id.step_description)
     TextView descriptionTextView;
     @Nullable
@@ -69,16 +72,21 @@ public class InstructionStepFragment extends Fragment {
             startWindow = savedInstanceState.getInt(WINDOW);
             startAutoPlay = savedInstanceState.getBoolean(AUTO_PLAY);
         }
-
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Bundle bundle = getArguments();
-        step = bundle.getParcelable(CURRENT_STEP);
-        if (!TextUtils.isEmpty(step.getVideoUrl()) && !getResources().getBoolean(R.bool.action_bar_visibility))
-            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        if (bundle != null && bundle.containsKey(CURRENT_STEP)) {
+            step = bundle.getParcelable(CURRENT_STEP);
+            if (step != null && !TextUtils.isEmpty(step.getVideoUrl()) && !getResources().getBoolean(R.bool.action_bar_visibility)) {
+                hideActionBar();
+            }
+        }
+        if (step == null) {
+            Toast.makeText(context, "No instruction", Toast.LENGTH_SHORT).show();
+        }
         try {
             listener = ((StepNavigationListener) context);
         } catch (ClassCastException e) {
@@ -86,14 +94,31 @@ public class InstructionStepFragment extends Fragment {
         }
     }
 
+    private void hideActionBar() {
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.hide();
+            }
+        }
+    }
+
+    private void showActionBar() {
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.show();
+            }
+        }
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, rootView);
         if (descriptionTextView != null) {
             descriptionTextView.setText(step.getDescription());
         }
-
         if (nextButton != null) {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +127,6 @@ public class InstructionStepFragment extends Fragment {
                 }
             });
         }
-
         if (backButton != null) {
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,8 +135,6 @@ public class InstructionStepFragment extends Fragment {
                 }
             });
         }
-
-
         return rootView;
     }
 
@@ -122,7 +144,7 @@ public class InstructionStepFragment extends Fragment {
 
             String userAgent = Util.getUserAgent(getContext(), "BakingApp");
             MediaSource mediaSource = new ExtractorMediaSource(videoUri, new DefaultDataSourceFactory(
-                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+                    Objects.requireNonNull(getContext()), userAgent), new DefaultExtractorsFactory(), null, null);
 
             exoPlayer.setPlayWhenReady(startAutoPlay);
 
@@ -132,7 +154,6 @@ public class InstructionStepFragment extends Fragment {
             }
             exoPlayer.prepare(mediaSource, !haveStartPosition, false);
             playerView.setPlayer(exoPlayer);
-
         }
     }
 
@@ -144,7 +165,6 @@ public class InstructionStepFragment extends Fragment {
             exoPlayer = null;
 
         }
-
     }
 
     private void updatePosition() {
@@ -161,7 +181,7 @@ public class InstructionStepFragment extends Fragment {
         if (exoPlayer != null) {
             releasePlayer();
         }
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        showActionBar();
     }
 
     @Override

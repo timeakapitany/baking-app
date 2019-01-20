@@ -14,22 +14,21 @@ import java.util.List;
 
 class InstructionStepsAdapter extends RecyclerView.Adapter<InstructionStepsViewHolder> {
 
-    private boolean needsHighlight;
+    private final boolean needsHighlight;
     private List<Step> items = new ArrayList<>();
     private int currentPosition;
     private StepClickListener clickListener;
 
-    public InstructionStepsAdapter(boolean needsHighlight, int position) {
-
+    InstructionStepsAdapter(boolean needsHighlight, int position) {
         this.needsHighlight = needsHighlight;
         this.currentPosition = position;
     }
 
-    public int getCurrentPosition() {
+    int getCurrentPosition() {
         return currentPosition;
     }
 
-    public boolean isNeedsHighlight() {
+    boolean isNeedsHighlight() {
         return needsHighlight;
     }
 
@@ -49,9 +48,9 @@ class InstructionStepsAdapter extends RecyclerView.Adapter<InstructionStepsViewH
             @Override
             public void onClick(View v) {
                 int previousPosition = currentPosition;
-                currentPosition = position;
+                currentPosition = holder.getAdapterPosition();
                 if (clickListener != null) {
-                    clickListener.onStepClick(v, position);
+                    clickListener.onStepClick(v, holder.getAdapterPosition());
                 }
                 notifyItemChanged(previousPosition);
                 notifyItemChanged(currentPosition);
@@ -70,12 +69,12 @@ class InstructionStepsAdapter extends RecyclerView.Adapter<InstructionStepsViewH
         return items.size();
     }
 
-    public void setItems(List<Step> steps) {
+    void setItems(List<Step> steps) {
         this.items = steps;
         notifyDataSetChanged();
     }
 
-    public void setClickListener(StepClickListener clickListener) {
+    void setClickListener(StepClickListener clickListener) {
         this.clickListener = clickListener;
     }
 

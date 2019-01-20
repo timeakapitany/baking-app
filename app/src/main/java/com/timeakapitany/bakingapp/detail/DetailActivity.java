@@ -53,7 +53,9 @@ public class DetailActivity extends AppCompatActivity
     }
 
     private void setActionBarTitle() {
-        this.getSupportActionBar().setTitle(recipe.getName());
+        if (this.getSupportActionBar() != null) {
+            this.getSupportActionBar().setTitle(recipe.getName());
+        }
     }
 
     private void showDetailFragment() {
@@ -136,6 +138,5 @@ public class DetailActivity extends AppCompatActivity
             onStepClick(null, currentPosition);
         }
     }
-
 
 }

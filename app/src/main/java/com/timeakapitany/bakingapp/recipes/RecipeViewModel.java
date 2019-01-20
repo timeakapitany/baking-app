@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeViewModel extends AndroidViewModel {
-    public MutableLiveData<List<Recipe>> recipesLiveData = new MutableLiveData<>();
-    private int recipeUrl = R.string.recipe_url;
+    public final MutableLiveData<List<Recipe>> recipesLiveData = new MutableLiveData<>();
 
     public RecipeViewModel(@NonNull Application application) {
         super(application);
@@ -28,6 +27,7 @@ public class RecipeViewModel extends AndroidViewModel {
 
     private void startNetworkCall() {
         RecipesAsyncTask recipesAsyncTask = new RecipesAsyncTask();
+        int recipeUrl = R.string.recipe_url;
         recipesAsyncTask.execute(getApplication().getResources().getString(recipeUrl));
     }
 

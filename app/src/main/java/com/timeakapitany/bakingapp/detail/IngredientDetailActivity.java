@@ -16,7 +16,6 @@ public class IngredientDetailActivity extends AppCompatActivity {
     public static final String CURRENT_RECIPE = "ingredient.list";
     @BindView(R.id.ingredient_detail)
     TextView ingredientDetail;
-    private Recipe recipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +23,11 @@ public class IngredientDetailActivity extends AppCompatActivity {
         setContentView(R.layout.ingredient_detail);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-        recipe = getIntent().getParcelableExtra(IngredientDetailActivity.CURRENT_RECIPE);
+        Recipe recipe = getIntent().getParcelableExtra(IngredientDetailActivity.CURRENT_RECIPE);
         this.getSupportActionBar().setSubtitle(recipe.getName());
         ingredientDetail.setText(createIngredientListing(recipe));
 
@@ -40,7 +41,6 @@ public class IngredientDetailActivity extends AppCompatActivity {
                     recipe.getIngredientsList().get(i).getMeasure()));
         }
         return stringBuilder.toString();
-
     }
 
     @Override
