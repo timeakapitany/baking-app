@@ -18,17 +18,32 @@
 
     </com.google.android.exoplayer2.ui.PlayerView>
 
-    <TextView
-        android:id="@+id/step_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/view_margin"
-        android:layout_marginEnd="@dimen/view_margin"
-        android:textAlignment="viewStart"
+    <ImageView
+        android:id="@+id/step_thumbnail"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="@dimen/view_margin"
+        android:layout_marginTop="@dimen/view_margin"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/lorem/random" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/step_thumbnail"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/step_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/view_margin"
+            android:layout_marginEnd="@dimen/view_margin"
+            android:visibility="gone"
+            tools:text="@tools:sample/lorem/random" />
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

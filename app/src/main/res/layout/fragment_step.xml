@@ -22,14 +22,23 @@
 
     </com.google.android.exoplayer2.ui.PlayerView>
 
+    <ImageView
+        android:id="@+id/step_thumbnail"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="@dimen/view_margin"
+        app:layout_constraintStart_toStartOf="@+id/playerView"
+        app:layout_constraintTop_toBottomOf="@+id/playerView" />
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/view_margin"
         android:layout_marginEnd="@dimen/view_margin"
+        android:layout_marginStart="@dimen/view_margin"
         app:layout_constraintBottom_toTopOf="@id/back_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/playerView"
+        app:layout_constraintStart_toEndOf="@+id/step_thumbnail"
         app:layout_constraintTop_toBottomOf="@+id/playerView">
 
         <TextView

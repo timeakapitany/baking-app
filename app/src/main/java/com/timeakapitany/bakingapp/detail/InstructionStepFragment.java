@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import com.timeakapitany.bakingapp.R;
 import com.timeakapitany.bakingapp.model.Step;
 
@@ -43,6 +45,8 @@ public class InstructionStepFragment extends Fragment {
     PlayerView playerView;
     @BindView(R.id.step_description)
     TextView descriptionTextView;
+    @BindView(R.id.step_thumbnail)
+    ImageView stepImage;
     @Nullable
     @BindView(R.id.back_button)
     Button backButton;
@@ -119,6 +123,18 @@ public class InstructionStepFragment extends Fragment {
         if (descriptionTextView != null) {
             descriptionTextView.setText(step.getDescription());
         }
+        if (stepImage != null) {
+            String url = step.getThumbnailUrl();
+            if (TextUtils.isEmpty(url)) {
+                stepImage.setVisibility(View.GONE);
+            } else {
+                Picasso.with(getContext())
+                        .load(url)
+                        .error(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
+                        .into(stepImage);
+            }
+        }
         if (nextButton != null) {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,9 +192,18 @@ public class InstructionStepFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23 && exoPlayer != null) {
+            releasePlayer();
+        }
+        showActionBar();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
-        if (exoPlayer != null) {
+        if (Util.SDK_INT > 23 && exoPlayer != null) {
             releasePlayer();
         }
         showActionBar();
@@ -191,7 +216,11 @@ public class InstructionStepFragment extends Fragment {
             initializePlayer(Uri.parse(step.getVideoUrl()));
         } else {
             playerView.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(step.getThumbnailUrl())) {
+                stepImage.setVisibility(View.VISIBLE);
+            }
             descriptionTextView.setVisibility(View.VISIBLE);
+
         }
     }
 
