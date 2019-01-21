@@ -69,16 +69,6 @@ public class InstructionStepFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            startPosition = savedInstanceState.getLong(POSITION);
-            startWindow = savedInstanceState.getInt(WINDOW);
-            startAutoPlay = savedInstanceState.getBoolean(AUTO_PLAY);
-        }
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Bundle bundle = getArguments();
@@ -98,21 +88,13 @@ public class InstructionStepFragment extends Fragment {
         }
     }
 
-    private void hideActionBar() {
-        if (getActivity() != null) {
-            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.hide();
-            }
-        }
-    }
-
-    private void showActionBar() {
-        if (getActivity() != null) {
-            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            startPosition = savedInstanceState.getLong(POSITION);
+            startWindow = savedInstanceState.getInt(WINDOW);
+            startAutoPlay = savedInstanceState.getBoolean(AUTO_PLAY);
         }
     }
 
@@ -120,21 +102,20 @@ public class InstructionStepFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, rootView);
-        if (descriptionTextView != null) {
-            descriptionTextView.setText(step.getDescription());
+
+        descriptionTextView.setText(step.getDescription());
+
+        String url = step.getThumbnailUrl();
+        if (TextUtils.isEmpty(url)) {
+            stepImage.setVisibility(View.GONE);
+        } else {
+            Picasso.with(getContext())
+                    .load(url)
+                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)
+                    .into(stepImage);
         }
-        if (stepImage != null) {
-            String url = step.getThumbnailUrl();
-            if (TextUtils.isEmpty(url)) {
-                stepImage.setVisibility(View.GONE);
-            } else {
-                Picasso.with(getContext())
-                        .load(url)
-                        .error(R.drawable.placeholder)
-                        .placeholder(R.drawable.placeholder)
-                        .into(stepImage);
-            }
-        }
+
         if (nextButton != null) {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -152,6 +133,54 @@ public class InstructionStepFragment extends Fragment {
             });
         }
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!TextUtils.isEmpty(step.getVideoUrl())) {
+            initializePlayer(Uri.parse(step.getVideoUrl()));
+        } else {
+            playerView.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(step.getThumbnailUrl())) {
+                stepImage.setVisibility(View.VISIBLE);
+            }
+            descriptionTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23 && exoPlayer != null) {
+            releasePlayer();
+        }
+        showActionBar();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23 && exoPlayer != null) {
+            releasePlayer();
+        }
+        showActionBar();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        updatePosition();
+        outState.putLong(POSITION, startPosition);
+        outState.putInt(WINDOW, startWindow);
+        outState.putBoolean(AUTO_PLAY, startAutoPlay);
+        super.onSaveInstanceState(outState);
+    }
+
+    public interface StepNavigationListener {
+
+        void onNextClick(View v);
+
+        void onBackClick(View v);
     }
 
     private void initializePlayer(Uri videoUri) {
@@ -179,7 +208,6 @@ public class InstructionStepFragment extends Fragment {
             exoPlayer.stop();
             exoPlayer.release();
             exoPlayer = null;
-
         }
     }
 
@@ -191,52 +219,21 @@ public class InstructionStepFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (Util.SDK_INT <= 23 && exoPlayer != null) {
-            releasePlayer();
-        }
-        showActionBar();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (Util.SDK_INT > 23 && exoPlayer != null) {
-            releasePlayer();
-        }
-        showActionBar();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!TextUtils.isEmpty(step.getVideoUrl())) {
-            initializePlayer(Uri.parse(step.getVideoUrl()));
-        } else {
-            playerView.setVisibility(View.GONE);
-            if (!TextUtils.isEmpty(step.getThumbnailUrl())) {
-                stepImage.setVisibility(View.VISIBLE);
+    private void hideActionBar() {
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.hide();
             }
-            descriptionTextView.setVisibility(View.VISIBLE);
-
         }
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        updatePosition();
-        outState.putLong(POSITION, startPosition);
-        outState.putInt(WINDOW, startWindow);
-        outState.putBoolean(AUTO_PLAY, startAutoPlay);
-        super.onSaveInstanceState(outState);
-    }
-
-    public interface StepNavigationListener {
-
-        void onNextClick(View v);
-
-        void onBackClick(View v);
+    private void showActionBar() {
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.show();
+            }
+        }
     }
 }

@@ -14,20 +14,15 @@
         android:layout_marginStart="@dimen/view_margin"
         android:layout_marginTop="@dimen/view_margin"
         android:layout_marginEnd="@dimen/view_margin"
+        android:textColor="@color/background"
         android:textStyle="bold|italic"
         tools:text="@tools:sample/lorem" />
 
-
-    <TextView
-        android:id="@+id/appwidget_ingredient"
+    <ListView
+        android:id="@+id/widget_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/view_margin"
         android:layout_marginTop="@dimen/view_margin"
-        android:layout_marginEnd="@dimen/view_margin"
         android:layout_marginBottom="@dimen/view_margin"
-        android:textSize="12sp"
-        android:textStyle="italic"
-        tools:text="@tools:sample/lorem/random" />
-
+        tools:listitem="@layout/item_widget_ingredient" />
 </LinearLayout>
