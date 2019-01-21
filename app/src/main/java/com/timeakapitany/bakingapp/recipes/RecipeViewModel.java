@@ -30,12 +30,12 @@ public class RecipeViewModel extends AndroidViewModel {
     private void startNetworkCall() {
         createService().listRecipes().enqueue(new Callback<List<Recipe>>() {
             @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+            public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
                 recipesLiveData.postValue(response.body());
             }
 
             @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
                 Log.d(TAG, "onFailure: Data load failed");
             }
         });

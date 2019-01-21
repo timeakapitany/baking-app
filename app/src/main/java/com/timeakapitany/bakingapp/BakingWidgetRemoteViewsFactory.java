@@ -10,8 +10,8 @@ import com.timeakapitany.bakingapp.model.Ingredient;
 import com.timeakapitany.bakingapp.model.Recipe;
 
 public class BakingWidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private Context context;
-    private Recipe recipe;
+    private final Context context;
+    private final Recipe recipe;
 
     public BakingWidgetRemoteViewsFactory(Context context, Intent intent) {
         this.context = context;
