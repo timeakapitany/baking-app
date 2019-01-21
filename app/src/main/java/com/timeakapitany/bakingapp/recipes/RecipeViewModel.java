@@ -1,22 +1,25 @@
 package com.timeakapitany.bakingapp.recipes;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.timeakapitany.bakingapp.R;
+import com.timeakapitany.bakingapp.api.BakingService;
 import com.timeakapitany.bakingapp.model.Recipe;
-import com.timeakapitany.bakingapp.util.JsonParser;
-import com.timeakapitany.bakingapp.util.NetworkUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+
 public class RecipeViewModel extends AndroidViewModel {
+    private static final String TAG = RecipeViewModel.class.getSimpleName();
     public final MutableLiveData<List<Recipe>> recipesLiveData = new MutableLiveData<>();
 
     public RecipeViewModel(@NonNull Application application) {
@@ -24,35 +27,26 @@ public class RecipeViewModel extends AndroidViewModel {
         startNetworkCall();
     }
 
-
     private void startNetworkCall() {
-        RecipesAsyncTask recipesAsyncTask = new RecipesAsyncTask();
-        int recipeUrl = R.string.recipe_url;
-        recipesAsyncTask.execute(getApplication().getResources().getString(recipeUrl));
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    class RecipesAsyncTask extends AsyncTask<String, Void, List<Recipe>> {
-        private static final String TAG = "RecipesAsyncTask";
-
-
-        @Override
-        protected List<Recipe> doInBackground(String... strings) {
-            Log.d(TAG, "doInBackground: " + strings[0]);
-            List<Recipe> recipes = new ArrayList<>();
-            String recipeFeed = NetworkUtils.downloadData(strings[0]);
-            if (recipeFeed != null) {
-                recipes = JsonParser.parseRecipeJson(recipeFeed);
+        createService().listRecipes().enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                recipesLiveData.postValue(response.body());
             }
-            return recipes;
-        }
 
-        @Override
-        protected void onPostExecute(List<Recipe> recipes) {
-            super.onPostExecute(recipes);
-            Log.d(TAG, "onPostExecute: " + recipes);
-            recipesLiveData.postValue(recipes);
-        }
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.d(TAG, "onFailure: Data load failed");
+            }
+        });
     }
 
+    private BakingService createService() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        return retrofit.create(BakingService.class);
+    }
 }

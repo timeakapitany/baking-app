@@ -3,6 +3,8 @@ package com.timeakapitany.bakingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Step implements Parcelable {
     public static final Parcelable.Creator<Step> CREATOR = new Parcelable.Creator<Step>() {
         @Override
@@ -15,10 +17,13 @@ public class Step implements Parcelable {
             return new Step[size];
         }
     };
+    @SerializedName("id")
     private Integer stepId;
     private String shortDescription;
     private String description;
+    @SerializedName("videoURL")
     private String videoUrl;
+    @SerializedName("thumbnailURL")
     private String thumbnailUrl;
 
     public Step(Integer stepId, String shortDescription, String description) {

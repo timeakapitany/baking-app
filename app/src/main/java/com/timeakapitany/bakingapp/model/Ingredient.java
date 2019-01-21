@@ -3,6 +3,8 @@ package com.timeakapitany.bakingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Ingredient implements Parcelable {
 
     public static final Parcelable.Creator<Ingredient> CREATOR = new Parcelable.Creator<Ingredient>() {
@@ -18,6 +20,7 @@ public class Ingredient implements Parcelable {
     };
     private Double quantity;
     private String measure;
+    @SerializedName("ingredient")
     private String ingredientName;
 
     public Ingredient() {

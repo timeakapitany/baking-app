@@ -3,6 +3,8 @@ package com.timeakapitany.bakingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,9 @@ public class Recipe implements Parcelable {
     };
     private Integer id;
     private String name;
+    @SerializedName("ingredients")
     private List<Ingredient> ingredientsList;
+    @SerializedName("steps")
     private List<Step> stepsList;
     private Integer servings;
     private String image;
